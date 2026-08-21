@@ -2,16 +2,43 @@
 
 import { useState } from 'react';
 import { CheckCircle, ArrowRight } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     name: '', email: '', phone: '', city: '', role: 'member', message: '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: wire to Supabase waitlist table
+    setLoading(true);
+    setError(null);
+
+    const { error: sbError } = await supabase
+      .from('waitlist')
+      .insert({
+        name: form.name,
+        email: form.email.toLowerCase(),
+        phone: form.phone || null,
+        city: form.city,
+        role: form.role,
+        message: form.message || null,
+      });
+
+    setLoading(false);
+
+    if (sbError) {
+      if (sbError.code === '23505') {
+        setError('This email is already on the waitlist. We will be in touch soon.');
+      } else {
+        setError('Something went wrong. Please try WhatsApp instead.');
+      }
+      return;
+    }
+
     setSubmitted(true);
   };
 
@@ -129,11 +156,17 @@ export default function ContactPage() {
                     className="w-full px-4 py-3.5 rounded-xl border border-[#2B1B12]/15 bg-[#FDFCF8] font-sans text-[14px] text-[#2B1B12] placeholder:text-[#2B1B12]/30 focus:outline-none focus:border-[#D4A017]/50 transition-colors resize-none"
                   />
                 </div>
+                {error && (
+                  <p className="font-sans text-[13px] text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3 text-center">
+                    {error}
+                  </p>
+                )}
                 <button
                   type="submit"
-                  className="w-full inline-flex items-center justify-center gap-2 font-sans text-[12px] tracking-[0.15em] uppercase px-8 py-4 rounded-full bg-[#2B1B12] text-[#D4A017] hover:bg-[#3d2518] transition-colors"
+                  disabled={loading}
+                  className="w-full inline-flex items-center justify-center gap-2 font-sans text-[12px] tracking-[0.15em] uppercase px-8 py-4 rounded-full bg-[#2B1B12] text-[#D4A017] hover:bg-[#3d2518] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Join the Waitlist <ArrowRight size={14} />
+                  {loading ? 'Joining...' : <>Join the Waitlist <ArrowRight size={14} /></>}
                 </button>
                 <p className="font-sans text-[11px] text-[#2B1B12]/40 text-center">
                   No spam. We contact you when your city is ready to launch.
