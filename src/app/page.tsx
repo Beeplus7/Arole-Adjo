@@ -366,27 +366,9 @@ function BrandSection() {
               className="relative w-[300px] h-[300px] lg:w-[420px] lg:h-[420px] rounded-full bg-white shadow-[0_20px_60px_rgba(0,0,0,0.10),_0_0_0_1px_rgba(212,160,23,0.18)_inset] grid place-items-center p-10"
               style={{ animation: 'logoShimmer 5s ease-in-out infinite' }}
             >
-              {/* Brand material inside the circle */}
-              <div className="w-full h-full flex flex-col items-center justify-center gap-3 relative">
-                {/* Cowrie seal — the brand mark */}
-                <div className="w-[120px] h-[120px] lg:w-[160px] lg:h-[160px] rounded-full bg-[#2B1B12] flex items-center justify-center shadow-[0_8px_32px_rgba(43,27,18,0.5)]">
-                  <div className="w-[90px] h-[90px] lg:w-[120px] lg:h-[120px] rounded-full border-2 border-[#D4A017]/60 flex items-center justify-center flex-col gap-1">
-                    <span className="playfair font-bold text-[#D4A017] text-2xl lg:text-3xl tracking-[0.1em]">AA</span>
-                    <span className="text-[#D4A017]/60 text-[8px] tracking-[0.2em]">EST. MMXXV</span>
-                  </div>
-                </div>
-                {/* Brand name */}
-                <div className="text-center">
-                  <p className="playfair text-[#2B1B12] font-bold text-[13px] lg:text-[15px] tracking-[0.25em]">AROLE ADJO</p>
-                  <p className="text-[9px] tracking-[0.2em] text-[#2B1B12]/40 mt-0.5">THE HEIRLOOM OF TRUST</p>
-                </div>
-                {/* 5 people dots */}
-                <div className="flex gap-1.5">
-                  {['#D4A017','#B8860B','#2B1B12','#B8860B','#D4A017'].map((c,i) => (
-                    <div key={i} className="w-3 h-3 rounded-full border border-[#D4A017]/40" style={{ backgroundColor: c }} />
-                  ))}
-                </div>
-              </div>
+              {/* Real brand logo inside the circle */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/aroleadjo-logo.jpg" alt="Arole Adjo large logo" className="w-full h-full object-contain rounded-full" />
               <div className="pointer-events-none absolute inset-0 rounded-full border border-[#D4A017]/25" />
               <div className="pointer-events-none absolute inset-[18px] rounded-full border border-dashed border-[#2B1B12]/10" />
             </div>
@@ -563,20 +545,29 @@ function AntiJapaSection({ onWaitlist }: { onWaitlist: () => void }) {
           </p>
         </div>
 
-        {/* Founder */}
-        <div className="mt-16 lg:mt-20 border-t border-white/10 pt-10 flex flex-col lg:flex-row items-start lg:items-center gap-6 justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-[#D4A017] flex items-center justify-center">
-              <span className="playfair text-[#2B1B12] font-bold text-xl">OK</span>
+        {/* Fix 3 — replaced founder block */}
+        <div className="mt-16 lg:mt-20 border-t border-white/10 pt-10 flex flex-col lg:flex-row items-center gap-8 justify-between">
+          <div className="flex flex-col sm:flex-row items-center gap-6">
+            {/* Real logo mark in the card */}
+            <div className="w-16 h-16 rounded-2xl bg-[#D4A017]/10 border border-[#D4A017]/30 flex items-center justify-center shrink-0 overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/aroleadjo-logo.jpg" alt="Arole Adjo" className="w-full h-full object-cover" />
             </div>
             <div>
-              <p className="font-semibold text-[15px]">Olabamiji Kolabalogun</p>
-              <p className="text-[12px] opacity-60">A son of Ibadan, building for the diaspora that never stopped contributing.</p>
-              <p className="text-[11px] tracking-widest opacity-40 mt-1">BUILT WITH HERITAGE • FROM IBADAN TO OLDHAM</p>
+              <p className="text-[10px] tracking-[0.2em] uppercase text-[#D4A017]/70 mb-1">Ibadan × Oldham × Manchester</p>
+              <p className="font-semibold text-[16px] text-white">Arole Adjo — The Heirloom of Trust</p>
+              <p className="text-[13px] opacity-60 mt-1 max-w-[420px] leading-relaxed">
+                Rotating savings circles reimagined for the Yoruba diaspora across the UK. Traditional trust. Digital future. Shared prosperity.
+              </p>
+              <div className="flex gap-3 mt-3 flex-wrap">
+                {['GoCardless approved', '2% insurance', '5-person circles', 'FCA compliant'].map(t => (
+                  <span key={t} className="text-[10px] px-2.5 py-1 rounded-full bg-white/10 text-white/70">{t}</span>
+                ))}
+              </div>
             </div>
           </div>
           <button onClick={onWaitlist}
-            className="inline-flex h-[48px] px-7 rounded-full bg-[#D4A017] text-[#2B1B12] font-semibold text-[14px] items-center gap-2 shadow-[0_8px_24px_rgba(212,160,23,0.35)] hover:bg-[#C89612] transition-colors whitespace-nowrap">
+            className="inline-flex h-[48px] px-7 rounded-full bg-[#D4A017] text-[#2B1B12] font-semibold text-[14px] items-center gap-2 shadow-[0_8px_24px_rgba(212,160,23,0.35)] hover:bg-[#C89612] transition-colors whitespace-nowrap shrink-0">
             Join 5,000 Waitlist — Free
           </button>
         </div>
@@ -593,8 +584,9 @@ function Footer({ onWaitlist }: { onWaitlist: () => void }) {
         <div className="grid lg:grid-cols-[1.4fr_0.6fr] gap-12 mb-14">
           <div>
             <div className="flex items-center gap-3 mb-5">
-              <div className="w-9 h-9 rounded-full bg-[#2B1B12] flex items-center justify-center">
-                <span className="playfair text-[#D4A017] font-bold text-[11px] tracking-[0.15em]">AA</span>
+              <div className="w-9 h-9 rounded-full overflow-hidden ring-1 ring-[#2B1B12]/10">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/aroleadjo-logo.jpg" alt="Arole Adjo logo" className="w-full h-full object-cover" />
               </div>
               <span className="playfair font-bold tracking-[0.18em] text-[13px] text-[#2B1B12]">AROLE ADJO</span>
             </div>
@@ -624,7 +616,7 @@ function Footer({ onWaitlist }: { onWaitlist: () => void }) {
         </div>
         <div className="border-t border-[#2B1B12]/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-[11px] text-[#2B1B12]/40">
-            © 2026 • House of Chief Abdul Gani Kolabalogun • Built with trust as heirloom
+            © 2026 • AroleAdjo • Built with trust as heirloom
           </p>
           <div className="flex gap-6">
             <Link href="/legal" className="text-[11px] text-[#2B1B12]/40 hover:text-[#D4A017] transition-colors">Privacy</Link>
@@ -652,8 +644,9 @@ export default function HomePage() {
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#FDFCF8]/85 border-b border-[#2B1B12]/[0.06] overflow-hidden max-w-[100vw]">
         <div className="mx-auto max-w-[1280px] px-6 lg:px-8 h-[72px] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-[#2B1B12] flex items-center justify-center ring-1 ring-[#2B1B12]/10">
-              <span className="playfair text-[#D4A017] font-bold text-[11px] tracking-widest">AA</span>
+            <div className="w-9 h-9 rounded-full overflow-hidden ring-1 ring-[#2B1B12]/10">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/aroleadjo-logo.jpg" alt="Arole Adjo logo" className="w-full h-full object-cover" />
             </div>
             <span className="playfair tracking-[0.18em] text-[13px] font-bold">AROLE ADJO</span>
           </div>
