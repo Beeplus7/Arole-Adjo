@@ -10,8 +10,9 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3 mb-5">
-              <div className="w-8 h-8 rounded-full border border-[#D4A017]/40 flex items-center justify-center">
-                <span className="font-display font-bold text-[#D4A017] text-[11px] tracking-[0.15em]">AA</span>
+              <div className="w-9 h-9 rounded-full overflow-hidden ring-1 ring-[#FDFCF8]/20 shrink-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/aroleadjo-logo.jpg" alt="Arole Adjo logo" className="w-full h-full object-cover" />
               </div>
               <span className="font-display font-semibold tracking-[0.18em] text-[13px]">AROLE ADJO</span>
             </div>

@@ -26,10 +26,9 @@ export default function Navbar() {
       <div className="max-w-[1280px] mx-auto px-6 md:px-10 flex justify-between items-center">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-[#2B1B12] flex items-center justify-center shrink-0">
-            <span className="font-display font-bold text-[#D4A017] text-[11px] tracking-[0.15em]">
-              AA
-            </span>
+          <div className="w-9 h-9 rounded-full overflow-hidden ring-1 ring-[#2B1B12]/10 shrink-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/aroleadjo-logo.jpg" alt="Arole Adjo logo" className="w-full h-full object-cover" />
           </div>
           <div className="flex items-center gap-2">
             <span className="font-display font-semibold tracking-[0.18em] text-[13px] text-[#2B1B12]">
