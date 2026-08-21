@@ -343,36 +343,55 @@ function BrandSection() {
       <div className="absolute inset-0 bg-[#FDFCF8]" />
       <div className="absolute inset-0 adire-bg opacity-[0.06]" />
       <div className="relative mx-auto max-w-[1280px] px-6 lg:px-8">
+        {/* Fix 1 — correct heading */}
         <div className="text-center max-w-[780px] mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#2B1B12]/10 text-[11px] tracking-widest text-[#2B1B12]">
             <span>🐚</span>
-            <span>AROLE ADJO — MORE THAN A LOGO</span>
+            <span>OFFICIAL BRAND GUIDELINES</span>
           </div>
           <p className="playfair mt-6 text-[36px] lg:text-[56px] leading-[0.95] font-bold tracking-[-0.02em] text-[#2B1B12]">
-            The bowl, the cowrie,<br />the five.
+            Arole Adjo —<br />More Than a Logo
           </p>
           <p className="mt-4 opacity-60 text-[14px] leading-[1.6] text-[#2B1B12]">
-            A symbol that cannot be faked. Every circle is a village, every deposit is a cowrie, every rotation is trust made visible.
+            The bowl, the cowrie, the five. A symbol that cannot be faked. Every circle is a village, every deposit is a cowrie, every rotation is trust made visible.
           </p>
           <p className="mt-2 text-[11px] tracking-widest opacity-40 text-[#2B1B12]">GOLD FOIL • 5 PEOPLE • BOWL • COWRIE</p>
         </div>
 
-        {/* Central logo orb */}
+        {/* Central logo orb — brand image inside, no emoji */}
         <div className="mt-12 lg:mt-16 flex justify-center">
           <div className="relative">
             <div className="absolute -inset-10 rounded-full bg-[radial-gradient(circle,_rgba(212,160,23,0.22),_transparent_65%)] blur-xl" />
-            <div className="relative w-[300px] h-[300px] lg:w-[420px] lg:h-[420px] rounded-full bg-white shadow-[0_20px_60px_rgba(0,0,0,0.10),_0_0_0_1px_rgba(212,160,23,0.18)_inset] grid place-items-center p-10"
-              style={{ animation: 'logoShimmer 4s ease-in-out infinite' }}>
+            <div
+              className="relative w-[300px] h-[300px] lg:w-[420px] lg:h-[420px] rounded-full bg-white shadow-[0_20px_60px_rgba(0,0,0,0.10),_0_0_0_1px_rgba(212,160,23,0.18)_inset] grid place-items-center p-10"
+              style={{ animation: 'logoShimmer 5s ease-in-out infinite' }}
+            >
+              {/* Brand material inside the circle */}
+              <div className="w-full h-full flex flex-col items-center justify-center gap-3 relative">
+                {/* Cowrie seal — the brand mark */}
+                <div className="w-[120px] h-[120px] lg:w-[160px] lg:h-[160px] rounded-full bg-[#2B1B12] flex items-center justify-center shadow-[0_8px_32px_rgba(43,27,18,0.5)]">
+                  <div className="w-[90px] h-[90px] lg:w-[120px] lg:h-[120px] rounded-full border-2 border-[#D4A017]/60 flex items-center justify-center flex-col gap-1">
+                    <span className="playfair font-bold text-[#D4A017] text-2xl lg:text-3xl tracking-[0.1em]">AA</span>
+                    <span className="text-[#D4A017]/60 text-[8px] tracking-[0.2em]">EST. MMXXV</span>
+                  </div>
+                </div>
+                {/* Brand name */}
+                <div className="text-center">
+                  <p className="playfair text-[#2B1B12] font-bold text-[13px] lg:text-[15px] tracking-[0.25em]">AROLE ADJO</p>
+                  <p className="text-[9px] tracking-[0.2em] text-[#2B1B12]/40 mt-0.5">THE HEIRLOOM OF TRUST</p>
+                </div>
+                {/* 5 people dots */}
+                <div className="flex gap-1.5">
+                  {['#D4A017','#B8860B','#2B1B12','#B8860B','#D4A017'].map((c,i) => (
+                    <div key={i} className="w-3 h-3 rounded-full border border-[#D4A017]/40" style={{ backgroundColor: c }} />
+                  ))}
+                </div>
+              </div>
               <div className="pointer-events-none absolute inset-0 rounded-full border border-[#D4A017]/25" />
               <div className="pointer-events-none absolute inset-[18px] rounded-full border border-dashed border-[#2B1B12]/10" />
-              <div className="text-center">
-                <div className="text-7xl lg:text-8xl">🐚</div>
-                <p className="playfair text-[#2B1B12] font-bold text-xl mt-3 tracking-[0.15em]">AROLE ADJO</p>
-                <p className="text-[10px] tracking-widest opacity-40 mt-1 text-[#2B1B12]">EST. MMXXV • MANCHESTER</p>
-              </div>
             </div>
             <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-[#2B1B12] text-white px-4 py-1.5 text-[10px] tracking-widest shadow-lg whitespace-nowrap">
-              GOLD FOIL • TRUST IS HEIRLOOM
+              GOLD FOIL • 5 PEOPLE • BOWL • COWRIE
             </div>
           </div>
         </div>
@@ -380,17 +399,17 @@ function BrandSection() {
         {/* Brand cards */}
         <div className="mt-16 lg:mt-20 grid lg:grid-cols-3 gap-6 max-w-[1040px] mx-auto">
           {[
-            { bg: 'bg-[#2B1B12]', icon: '📱', color: 'text-[#D4A017]', title: 'APP ICON • iOS / ANDROID', desc: 'Gold on deep brown, rounded superellipse. Instant trust at a glance.' },
-            { bg: 'bg-white border border-[#2B1B12]/10', icon: '💳', color: 'text-[#2B1B12]', title: 'BUSINESS CARD • LETTERPRESS', desc: 'Debossed cowrie texture, edge-painted gold. Feels like money you keep.' },
-            { bg: 'bg-[#F6E8BF] border border-[#D4A017]/30', icon: '📦', color: 'text-[#B8860B]', title: 'GOLD FOIL PACKAGING', desc: 'Foil-stamped circle on textured canvas. Mouthwatering in hand.' },
+            { bg: 'bg-[#2B1B12]', icon: '📱', title: 'APP ICON • iOS / ANDROID', desc: 'Gold on deep brown, rounded superellipse. Instant trust at a glance.', light: true },
+            { bg: 'bg-white border border-[#2B1B12]/10', icon: '💳', title: 'BUSINESS CARD • LETTERPRESS', desc: 'Debossed cowrie texture, edge-painted gold. Feels like money you keep.', light: false },
+            { bg: 'bg-[#F6E8BF] border border-[#D4A017]/30', icon: '📦', title: 'GOLD FOIL PACKAGING', desc: 'Foil-stamped circle on textured canvas. Mouthwatering in hand.', light: false },
           ].map((card, i) => (
             <div key={i} className={`rounded-[20px] ${card.bg} p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] relative overflow-hidden`}>
               {i === 2 && <div className="absolute -right-8 -top-8 w-24 h-24 rounded-full bg-[#D4A017]/20" />}
-              <p className={`text-[11px] tracking-widest opacity-60 relative ${i === 0 ? 'text-white' : 'text-[#2B1B12]'}`}>{card.title}</p>
-              <div className={`mt-4 w-[84px] h-[84px] rounded-[22px] ${i === 0 ? 'bg-white' : 'bg-[#2B1B12]'} p-2 shadow-[0_8px_24px_rgba(0,0,0,0.3)] flex items-center justify-center relative`}>
+              <p className={`text-[11px] tracking-widest opacity-60 relative ${card.light ? 'text-white' : 'text-[#2B1B12]'}`}>{card.title}</p>
+              <div className={`mt-4 w-[84px] h-[84px] rounded-[22px] ${card.light ? 'bg-white' : 'bg-[#2B1B12]'} p-2 shadow-[0_8px_24px_rgba(0,0,0,0.3)] flex items-center justify-center relative`}>
                 <span className="text-4xl">{card.icon}</span>
               </div>
-              <p className={`mt-4 text-[12px] opacity-70 relative ${i === 0 ? 'text-white' : 'text-[#2B1B12]'}`}>{card.desc}</p>
+              <p className={`mt-4 text-[12px] opacity-70 relative ${card.light ? 'text-white' : 'text-[#2B1B12]'}`}>{card.desc}</p>
             </div>
           ))}
         </div>
@@ -466,24 +485,31 @@ function AntiJapaSection({ onWaitlist }: { onWaitlist: () => void }) {
                 ))}
               </div>
 
-              {/* Centre orb */}
+              {/* Centre orb — Fix 2: POT VAULT content */}
               <div className="order-1 lg:order-2 flex flex-col items-center">
                 <div className="relative w-[280px] h-[280px] lg:w-[320px] lg:h-[320px]">
                   <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_30%_30%,_#D4A017_0%,_#B8860B_35%,_#2B1B12_72%)] shadow-[0_0_0_8px_rgba(212,160,23,0.15),_0_20px_60px_rgba(0,0,0,0.5)]" />
                   <div className="absolute inset-[12px] rounded-full border border-white/10" />
                   <div className="absolute inset-[22px] rounded-full border border-dashed border-white/15" />
+                  {/* POT VAULT content */}
                   <div className="absolute inset-0 grid place-items-center">
                     <div className="text-center">
-                      <div className="text-5xl">🐚</div>
-                      <p className="playfair text-[#D4A017] font-bold text-lg mt-2">AROLE ADJO</p>
-                      <p className="text-[10px] tracking-widest opacity-60 mt-1">4-WAY LOCKED</p>
+                      <p className="text-[11px] tracking-[0.2em] opacity-60 text-white">POT VAULT</p>
+                      <p className="playfair text-[46px] font-bold leading-none mt-2 text-[#D4A017]">£250</p>
+                      <p className="text-[11px] opacity-60 mt-2 text-white">Modulr • Segregated</p>
+                      <div className="mt-3 inline-flex items-center gap-1.5 text-[11px] px-3 py-1 rounded-full bg-emerald-400/15 text-emerald-300 border border-emerald-400/20">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block" />
+                        Locked • Auto
+                      </div>
                     </div>
                   </div>
+                  {/* Glowing corner dots */}
+                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-[#D4A017] shadow-[0_0_12px_#D4A017]" />
+                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-[#D4A017] shadow-[0_0_12px_#D4A017]" />
+                  <div className="absolute top-1/2 -left-2 -translate-y-1/2 w-3 h-3 rounded-full bg-white shadow-[0_0_12px_white]" />
+                  <div className="absolute top-1/2 -right-2 -translate-y-1/2 w-3 h-3 rounded-full bg-white shadow-[0_0_12px_white]" />
                 </div>
-                <p className="text-[11px] tracking-widest opacity-40 mt-4 text-center">CHAINS • 4-WAY LOCKED • NO ADMIN TOUCH</p>
-                <p className="text-[12px] opacity-60 mt-2 text-center max-w-[260px] leading-relaxed">
-                  If admin tries to touch funds: impossible. Modulr account is in Arole Adjo Ltd name, payouts are programmatic.
-                </p>
+                <p className="text-[11px] tracking-widest opacity-40 mt-6 text-center">CHAINS • 4-WAY LOCKED • NO ADMIN TOUCH</p>
               </div>
 
               {/* Right locks */}
@@ -506,6 +532,35 @@ function AntiJapaSection({ onWaitlist }: { onWaitlist: () => void }) {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Fix 3 — Money Flow container */}
+        <div className="mt-14 lg:mt-20 rounded-[20px] bg-white/[0.04] border border-white/10 p-4 lg:p-6">
+          <p className="text-[11px] tracking-widest opacity-60 mb-4">MONEY FLOW • NO ADMIN TOUCH • FCA REGULATED</p>
+          <div className="grid lg:grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr] gap-3 items-center">
+            {[
+              { num: '1', label: 'Your Bank', sub: 'You' },
+              { num: '2', label: 'GoCardless', sub: 'Auto-debit' },
+              { num: '3', label: 'Modulr Vault', sub: 'Segregated' },
+              { num: '4', label: 'Auto Payout', sub: 'To member' },
+            ].map((step, i, arr) => (
+              <>
+                <div key={step.num} className="rounded-xl bg-white text-[#2B1B12] px-4 py-3 flex items-center gap-3 border border-[#2B1B12]/10">
+                  <div className="w-8 h-8 rounded-full bg-[#2B1B12] text-white grid place-items-center text-[12px] font-bold shrink-0">{step.num}</div>
+                  <div>
+                    <div className="text-[13px] font-semibold">{step.label}</div>
+                    <div className="text-[11px] opacity-60">{step.sub}</div>
+                  </div>
+                </div>
+                {i < arr.length - 1 && (
+                  <div key={`arrow-${i}`} className="hidden lg:flex items-center justify-center opacity-40 text-white text-lg">→</div>
+                )}
+              </>
+            ))}
+          </div>
+          <p className="mt-4 text-[11px] opacity-50">
+            If admin tries to touch funds: impossible. Modulr account is in Arole Adjo Ltd name, payouts are programmatic, insurance triggers automatically.
+          </p>
         </div>
 
         {/* Founder */}
