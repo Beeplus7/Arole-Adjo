@@ -4,197 +4,243 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { CheckCircle, ArrowRight, Info } from 'lucide-react';
 
-const FEE_INCLUDES = [
-  'Rotation engine — auto-debit, auto-payout',
-  'Staked wallet & escrow management',
-  'Trust score tracking & reporting',
-  'Guarantor co-sign infrastructure',
-  'Circle insurance (pots £500+)',
-  'Village Drum — transaction ledger',
-  'Per-circle group chat',
-  'UK-regulated payment processing',
-  'Leader dashboard (for Alajo Agba)',
-  'Customer support (WhatsApp + email)',
+const PLANS = [
+  {
+    name: 'Starter Village', tag: 'New', forWho: 'New members, small circles',
+    potRange: 'Up to £250', fee: '2.5% per payout', feeExample: '£6.25 on £250',
+    youGet: '£243.75', youGetSub: 'on £250 pot',
+    cta: 'Join a Village', ctaStyle: 'border border-[#2B1B12]/15 text-[#2B1B12] hover:bg-black hover:text-white',
+    highlight: false,
+    features: ['Modulr segregated account', 'GoCardless auto-debit', 'Village Drum ledger', 'Guarantor system', '4 anti-japa locks'],
+  },
+  {
+    name: 'Trusted Village', tag: 'Most Popular', forWho: 'Most Yoruba families in UK',
+    potRange: '£250 — £500', fee: '2.5% per payout', feeExample: '£12.50 on £500',
+    youGet: '£487.50', youGetSub: 'on £500 pot',
+    cta: 'Join a Village', ctaStyle: 'bg-[#2B1B12] text-[#D4A017] hover:bg-black',
+    highlight: true,
+    features: ['Everything in Starter +', 'Priority payout processing', 'Need-Based sequence mode', 'Bidding mode unlocked', 'Inter-city village access', 'Village review system'],
+  },
+  {
+    name: 'Elder Village', tag: 'Business', forWho: 'Established villages, business circles',
+    potRange: '£500 — £1000+', fee: '2.5% + £29/mo leader SaaS', feeExample: '£25 on £1000',
+    youGet: '£975', youGetSub: 'on £1000 pot',
+    cta: 'Apply as Elder', ctaStyle: 'bg-[#D4A017] text-[#2B1B12] hover:bg-[#c49a14]',
+    highlight: false,
+    features: ['Everything +', 'Advanced Village Drum analytics', 'API access for village automation', 'Priority 1h support', 'Custom village branding', 'Alajo Agba 2% auto-split'],
+    note: 'Leader earns 2% separately',
+  },
 ];
 
-const FEE_NOT_INCLUDES = [
-  'No monthly subscription',
-  'No setup fee',
-  'No deposit deduction (deposit is returned to you)',
-  'No hidden conversion fee',
-  'No premium tier to unlock core features',
-];
-
-const EXAMPLES = [
-  { pot: 100, members: 5, frequency: 'Weekly', cycles: 5 },
-  { pot: 250, members: 5, frequency: 'Weekly', cycles: 5 },
-  { pot: 500, members: 10, frequency: 'Monthly', cycles: 10 },
-  { pot: 1000, members: 10, frequency: 'Monthly', cycles: 10 },
-  { pot: 2000, members: 15, frequency: 'Monthly', cycles: 15 },
+const COMPARISON = [
+  { feature: 'Funds held by admin', old: '❌ Yes — Japa risk', arole: '✅ Modulr vault only' },
+  { feature: 'Manual payment chasing', old: '❌ WhatsApp every week', arole: '✅ GoCardless auto-debit' },
+  { feature: 'Payout record', old: '❌ Screenshots deleted', arole: '✅ Village Drum SHA-256' },
+  { feature: 'If admin disappears', old: '❌ Money gone. Court. Stress.', arole: '✅ Impossible — 4 locks' },
+  { feature: 'Trust verification', old: '❌ "I know them" only', arole: '✅ Score + guarantor + KYC' },
+  { feature: 'FCA compliance', old: '❌ None', arole: '✅ Modulr FCA regulated' },
 ];
 
 export default function PricingPage() {
   const [pot, setPot] = useState(250);
   const [members, setMembers] = useState(5);
-
+  const contrib = Math.round(pot / members);
   const fee = pot * 0.025;
   const youReceive = pot - fee;
-  const totalPlatformFee = fee * members;
 
   return (
-    <div className="pt-28 pb-20">
-      {/* Header */}
-      <section className="px-6 md:px-10 max-w-[1280px] mx-auto text-center mb-20">
-        <span className="font-sans text-[10px] tracking-[0.25em] uppercase text-[#2B1B12]/50 block mb-4">Pricing</span>
-        <h1 className="font-display text-5xl md:text-7xl font-light text-[#2B1B12] leading-[1.05] mb-6">
-          One fee.<br />
-          <span className="italic font-medium text-[#D4A017]">No surprises.</span>
-        </h1>
-        <p className="font-sans text-[15px] text-[#2B1B12]/60 leading-relaxed max-w-[520px] mx-auto">
-          We charge 2.5% when you collect your pot. That&apos;s it. No subscription, no setup fee, no hidden anything. You know the number before you join.
-        </p>
-      </section>
+    <div className="min-h-screen bg-[#FDFCF8] text-[#2B1B12]">
 
-      {/* Main fee card */}
-      <section className="px-6 md:px-10 max-w-[600px] mx-auto mb-16">
-        <div className="gold-border rounded-2xl">
-          <div className="bg-[#FDFCF8] rounded-[calc(1rem-1px)] p-10 text-center paper-texture">
-            <span className="font-sans text-[10px] tracking-[0.25em] uppercase text-[#2B1B12]/40 block mb-4">Platform Fee</span>
-            <div className="font-display text-8xl font-light text-[#2B1B12] mb-2">2.5<span className="text-5xl">%</span></div>
-            <p className="font-sans text-[14px] text-[#2B1B12]/60 mb-6">Charged only when you receive your pot payout</p>
-            <div className="bg-[#2B1B12] rounded-xl px-6 py-4 inline-block">
-              <p className="font-sans text-[12px] text-[#FDFCF8]/60">£250 pot → <span className="text-[#D4A017] font-semibold">you receive £243.75</span></p>
-            </div>
+      {/* Hero */}
+      <section className="mx-auto max-w-[1280px] px-6 lg:px-8 pt-14 pb-10 lg:pt-20 lg:pb-16">
+        <div className="flex flex-col items-center text-center">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#2B1B12]/10 bg-white text-[12px] tracking-wide text-[#2B1B12]">
+            <span>💰</span> No Japa Fees.
           </div>
-        </div>
-      </section>
-
-      {/* Calculator */}
-      <section className="px-6 md:px-10 max-w-[900px] mx-auto mb-24">
-        <div className="bg-[#2B1B12] rounded-2xl p-8 md:p-12">
-          <p className="font-sans text-[10px] tracking-[0.2em] uppercase text-[#D4A017]/70 mb-2">Fee Calculator</p>
-          <h2 className="font-display text-3xl font-light text-[#FDFCF8] mb-8">
-            Calculate <span className="italic font-medium text-[#D4A017]">your exact number</span>
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-8 mb-8">
-            <div>
-              <label className="font-sans text-[11px] tracking-[0.1em] uppercase text-[#FDFCF8]/50 block mb-3">
-                Pot per member: <span className="text-[#D4A017]">£{pot}</span>
-              </label>
-              <input
-                type="range" min={50} max={2000} step={50}
-                value={pot}
-                onChange={(e) => setPot(Number(e.target.value))}
-                className="w-full accent-[#D4A017]"
-              />
-            </div>
-            <div>
-              <label className="font-sans text-[11px] tracking-[0.1em] uppercase text-[#FDFCF8]/50 block mb-3">
-                Members: <span className="text-[#D4A017]">{members}</span>
-              </label>
-              <input
-                type="range" min={3} max={20} step={1}
-                value={members}
-                onChange={(e) => setMembers(Number(e.target.value))}
-                className="w-full accent-[#D4A017]"
-              />
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-4">
-            <div className="bg-[#FDFCF8]/5 border border-[#FDFCF8]/10 rounded-xl p-5 text-center">
-              <p className="font-sans text-[10px] tracking-[0.1em] uppercase text-[#FDFCF8]/40 mb-2">Pot Size</p>
-              <p className="font-display text-3xl font-medium text-[#FDFCF8]">£{pot}</p>
-            </div>
-            <div className="bg-[#FDFCF8]/5 border border-[#D4A017]/30 rounded-xl p-5 text-center">
-              <p className="font-sans text-[10px] tracking-[0.1em] uppercase text-[#D4A017]/70 mb-2">You Receive</p>
-              <p className="font-display text-3xl font-medium text-[#D4A017]">£{youReceive.toFixed(2)}</p>
-            </div>
-            <div className="bg-[#FDFCF8]/5 border border-[#FDFCF8]/10 rounded-xl p-5 text-center">
-              <p className="font-sans text-[10px] tracking-[0.1em] uppercase text-[#FDFCF8]/40 mb-2">Fee</p>
-              <p className="font-display text-3xl font-medium text-[#FDFCF8]/50">£{fee.toFixed(2)}</p>
-            </div>
-          </div>
-
-          <p className="font-sans text-[11px] text-[#FDFCF8]/30 text-center mt-4">
-            {members} members × £{fee.toFixed(2)} fee = £{totalPlatformFee.toFixed(2)} total platform revenue per full rotation
+          <h1 className="playfair mt-6 text-[42px] lg:text-[72px] leading-[0.95] tracking-[-0.02em] max-w-[720px] text-[#2B1B12]">
+            Simple pricing.<br /><span className="italic font-normal text-[#D4A017]">No surprises.</span>
+          </h1>
+          <p className="mt-5 max-w-[560px] text-[16px] lg:text-[17px] leading-[1.6] opacity-70">
+            We only earn when you receive your pot. No monthly fee. No signup fee. No admin touching your money.
           </p>
         </div>
       </section>
 
-      {/* What it includes / doesn't include */}
-      <section className="px-6 md:px-10 max-w-[1280px] mx-auto mb-24">
-        <div className="grid md:grid-cols-2 gap-12">
-          <div>
-            <h2 className="font-display text-3xl font-light text-[#2B1B12] mb-6">
-              What 2.5% <span className="italic font-medium">includes</span>
-            </h2>
-            <ul className="space-y-3">
-              {FEE_INCLUDES.map((item, i) => (
-                <li key={i} className="flex items-start gap-3">
-                  <CheckCircle size={15} className="text-[#D4A017] shrink-0 mt-0.5" />
-                  <span className="font-sans text-[14px] text-[#2B1B12]/70">{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h2 className="font-display text-3xl font-light text-[#2B1B12] mb-6">
-              What it <span className="italic font-medium">does not include</span>
-            </h2>
-            <ul className="space-y-3">
-              {FEE_NOT_INCLUDES.map((item, i) => (
-                <li key={i} className="flex items-start gap-3">
-                  <div className="w-4 h-4 rounded-full border-2 border-[#2B1B12]/20 flex items-center justify-center shrink-0 mt-0.5">
-                    <div className="w-1.5 h-0.5 bg-[#2B1B12]/40 rounded-full" />
+      {/* Plans */}
+      <section className="mx-auto max-w-[1280px] px-6 lg:px-8 pb-8">
+        <div className="grid lg:grid-cols-3 gap-5">
+          {PLANS.map((plan, i) => (
+            <div key={i} className={`rounded-[24px] border bg-white p-7 flex flex-col relative ${plan.highlight ? 'border-[#D4A017] shadow-[0_20px_60px_rgba(212,160,23,0.18)] border-[1.5px]' : 'border-[#2B1B12]/10'}`}>
+              {plan.highlight && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[11px] font-bold tracking-widest uppercase text-white bg-[#D4A017]">
+                  Most Popular
+                </div>
+              )}
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className="font-bold text-[18px] text-[#2B1B12]">{plan.name}</p>
+                  <p className="text-[13px] opacity-60 mt-1 text-[#2B1B12]">{plan.forWho}</p>
+                </div>
+                <span className="text-[11px] tracking-widest uppercase opacity-50 border px-2.5 py-1 rounded-full text-[#2B1B12]">{plan.tag}</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 mb-5">
+                <div className={`rounded-xl p-3.5 ${plan.highlight ? 'bg-[#FDF1C9] border border-[#F1D98A]' : 'bg-[#F7F3EA]'}`}>
+                  <p className="text-[11px] uppercase tracking-wide opacity-60 text-[#2B1B12]">Pot Range</p>
+                  <p className="font-semibold text-[14px] mt-1 text-[#2B1B12]">{plan.potRange}</p>
+                  <p className="text-[12px] opacity-60 mt-0.5 text-[#2B1B12]">{plan.feeExample}</p>
+                </div>
+                <div className={`rounded-xl p-3.5 ${plan.highlight ? 'bg-[#D4A017] text-[#2B1B12]' : 'bg-[#2B1B12] text-white'}`}>
+                  <p className="text-[11px] uppercase tracking-wide opacity-60">You Get</p>
+                  <p className="font-bold text-[16px] mt-1">{plan.youGet}</p>
+                  <p className="text-[12px] opacity-60 mt-0.5">{plan.youGetSub}</p>
+                </div>
+              </div>
+
+              <div className="mb-5">
+                <p className="text-[12px] font-semibold text-[#2B1B12] opacity-60 mb-1">Fee: {plan.fee}</p>
+              </div>
+
+              <div className="space-y-2.5 text-[13.5px] flex-1 mb-6">
+                {plan.features.map(f => (
+                  <div key={f} className="flex gap-2.5 items-center">
+                    <div className={`h-5 w-5 rounded-full grid place-items-center shrink-0 ${plan.highlight ? 'bg-[#D4A017]' : 'bg-[#F3EAD2]'}`}>
+                      <CheckCircle className={`h-3 w-3 ${plan.highlight ? 'text-[#2B1B12]' : 'text-[#2B1B12]/60'}`} />
+                    </div>
+                    <span className="text-[#2B1B12]/80">{f}</span>
                   </div>
-                  <span className="font-sans text-[14px] text-[#2B1B12]/70">{item}</span>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-8 bg-[#D4A017]/8 border border-[#D4A017]/20 rounded-xl p-5 flex items-start gap-3">
-              <Info size={14} className="text-[#D4A017] shrink-0 mt-0.5" />
-              <p className="font-sans text-[13px] text-[#2B1B12]/70 leading-relaxed">
-                Leader earnings (2%) come out of the platform fee — not an additional charge to members. If your circle has an Alajo Agba leader, the split is: 2% to leader, 0.5% to platform reserve (insurance fund).
-              </p>
+                ))}
+              </div>
+
+              {plan.note && (
+                <div className="mt-auto mb-3 rounded-[16px] bg-[#2B1B12] text-[#FDFCF8] px-4 py-3 flex gap-3 items-start">
+                  <Info className="h-4 w-4 mt-0.5 shrink-0 opacity-60" />
+                  <p className="text-[13px] leading-[1.5]">{plan.note}</p>
+                </div>
+              )}
+
+              <Link href="/contact"
+                className={`mt-auto w-full h-11 rounded-full font-semibold text-[13.5px] flex items-center justify-center gap-2 transition ${plan.ctaStyle}`}>
+                {plan.cta} <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Calculator */}
+      <section className="mx-auto max-w-[1280px] px-6 lg:px-8 py-12 lg:py-16">
+        <div className="rounded-[28px] border border-[#2B1B12]/10 bg-white overflow-hidden">
+          <div className="p-8 lg:p-12 grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <p className="text-[10px] tracking-[0.2em] uppercase opacity-50 mb-2 text-[#2B1B12]">Calculate What You Get</p>
+              <h2 className="playfair text-[28px] lg:text-[40px] font-bold text-[#2B1B12] mb-6">
+                Drag to see your<br /><span className="text-[#D4A017]">real payout</span>
+              </h2>
+              <div className="space-y-6">
+                <div>
+                  <div className="flex justify-between mb-2">
+                    <label className="text-[12px] font-semibold text-[#2B1B12]/60 tracking-widest uppercase">Pot Size</label>
+                    <span className="text-[13px] font-bold text-[#2B1B12]">£{pot}</span>
+                  </div>
+                  <input type="range" min={100} max={1000} step={50} value={pot} onChange={e => setPot(Number(e.target.value))}
+                    className="w-full h-1 accent-[#D4A017]"
+                    style={{ background: `linear-gradient(to right, #D4A017 ${((pot-100)/900)*100}%, #e5e7eb ${((pot-100)/900)*100}%)` }}
+                  />
+                  <div className="flex justify-between text-[10px] opacity-40 mt-1 text-[#2B1B12]"><span>£100</span><span>£1000</span></div>
+                </div>
+                <div>
+                  <div className="flex justify-between mb-2">
+                    <label className="text-[12px] font-semibold text-[#2B1B12]/60 tracking-widest uppercase">Members</label>
+                    <span className="text-[13px] font-bold text-[#2B1B12]">{members}</span>
+                  </div>
+                  <input type="range" min={3} max={20} step={1} value={members} onChange={e => setMembers(Number(e.target.value))}
+                    className="w-full h-1 accent-[#D4A017]"
+                    style={{ background: `linear-gradient(to right, #D4A017 ${((members-3)/17)*100}%, #e5e7eb ${((members-3)/17)*100}%)` }}
+                  />
+                  <div className="flex justify-between text-[10px] opacity-40 mt-1 text-[#2B1B12]"><span>3</span><span>20</span></div>
+                </div>
+                <div className="rounded-xl bg-[#FDFCF8] border border-[#2B1B12]/8 p-4">
+                  <p className="text-[11px] opacity-50 tracking-widest text-[#2B1B12]">Contribution auto-calc:</p>
+                  <p className="text-[15px] font-bold text-[#2B1B12] mt-1">£{contrib}/week × {members} members = £{pot} pot</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Result card */}
+            <div className="rounded-[20px] bg-[#2B1B12] text-[#FDFCF8] p-8">
+              <p className="text-[10px] tracking-[0.2em] uppercase opacity-50 mb-4">Your Village Maths</p>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between py-3 border-b border-white/10">
+                  <span className="text-[13px] opacity-60">Pot size</span>
+                  <span className="playfair text-[20px] font-bold">£{pot}</span>
+                </div>
+                <div className="flex items-center justify-between py-3 border-b border-white/10">
+                  <span className="text-[13px] opacity-60">Platform fee (2.5%)</span>
+                  <span className="text-[16px] font-semibold text-red-400">− £{fee.toFixed(2)}</span>
+                </div>
+                <div className="flex items-center justify-between py-4 bg-[#D4A017]/10 rounded-xl px-4">
+                  <div>
+                    <span className="text-[11px] tracking-widest opacity-70">You Receive</span>
+                    <p className="text-[11px] opacity-50 mt-0.5">when your turn comes</p>
+                  </div>
+                  <span className="playfair text-[36px] font-bold text-[#D4A017]">£{youReceive.toFixed(2)}</span>
+                </div>
+                <div className="text-center">
+                  <p className="text-[11px] opacity-50">Circle: Standard payout 9am after collection. Instant £2.99 optional.</p>
+                </div>
+                {['No signup fee', 'No monthly fee'].map(t => (
+                  <div key={t} className="flex items-center gap-2 text-[12px]">
+                    <CheckCircle className="w-4 h-4 text-[#D4A017]" />
+                    <span className="opacity-70">{t}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Examples table */}
-      <section className="px-6 md:px-10 max-w-[900px] mx-auto mb-24">
-        <h2 className="font-display text-3xl font-light text-[#2B1B12] mb-8 text-center">
-          Common circle <span className="italic font-medium">examples</span>
-        </h2>
-        <div className="border border-[#2B1B12]/8 rounded-2xl overflow-hidden">
-          <div className="grid grid-cols-5 bg-[#2B1B12] px-6 py-3">
-            {['Pot', 'Members', 'Frequency', 'You Receive', 'Fee'].map((h) => (
-              <span key={h} className="font-sans text-[10px] tracking-[0.15em] uppercase text-[#FDFCF8]/50">{h}</span>
+      {/* Comparison */}
+      <section className="mx-auto max-w-[1280px] px-6 lg:px-8 py-12 lg:py-16">
+        <div className="text-center mb-10">
+          <h2 className="playfair text-[28px] lg:text-[40px] font-bold text-[#2B1B12]">
+            Not all Ajo is equal.
+          </h2>
+          <p className="mt-3 text-[14px] opacity-60 max-w-[480px] mx-auto text-[#2B1B12]">
+            See why Yoruba families are leaving WhatsApp groups for Arole Adjo — fixed 2.5%, no Japa story.
+          </p>
+        </div>
+        <div className="rounded-[20px] border border-[#2B1B12]/8 overflow-hidden">
+          <div className="grid grid-cols-3 bg-[#2B1B12] text-white px-6 py-3">
+            {['Feature', 'Old WhatsApp Ajo', 'Arole Adjo'].map(h => (
+              <span key={h} className="text-[11px] tracking-widest uppercase opacity-60">{h}</span>
             ))}
           </div>
-          {EXAMPLES.map((ex, i) => (
-            <div key={i} className={`grid grid-cols-5 px-6 py-4 ${i % 2 === 0 ? 'bg-[#FDFCF8]' : 'bg-[#2B1B12]/3'}`}>
-              <span className="font-display text-[15px] font-medium text-[#2B1B12]">£{ex.pot}</span>
-              <span className="font-sans text-[13px] text-[#2B1B12]/70">{ex.members} people</span>
-              <span className="font-sans text-[13px] text-[#2B1B12]/70">{ex.frequency}</span>
-              <span className="font-display text-[15px] font-medium text-[#D4A017]">£{(ex.pot * 0.975).toFixed(2)}</span>
-              <span className="font-sans text-[13px] text-[#2B1B12]/50">£{(ex.pot * 0.025).toFixed(2)}</span>
+          {COMPARISON.map((row, i) => (
+            <div key={i} className={`grid grid-cols-3 px-6 py-4 ${i % 2 === 0 ? 'bg-white' : 'bg-[#FDFCF8]'}`}>
+              <span className="text-[13px] font-medium text-[#2B1B12]">{row.feature}</span>
+              <span className="text-[13px] text-red-600">{row.old}</span>
+              <span className="text-[13px] text-emerald-700">{row.arole}</span>
             </div>
           ))}
         </div>
       </section>
 
       {/* CTA */}
-      <section className="px-6 md:px-10 max-w-[600px] mx-auto text-center">
-        <h2 className="font-display text-4xl font-light text-[#2B1B12] mb-4">
-          No surprises. <span className="italic font-medium">Ever.</span>
+      <section className="mx-auto max-w-[1280px] px-6 lg:px-8 py-12 lg:py-16 text-center">
+        <p className="playfair text-[20px] opacity-60 text-[#2B1B12] mb-2">Live in UK</p>
+        <h2 className="playfair text-[32px] lg:text-[48px] font-bold text-[#2B1B12] mb-4">
+          £42,000 rotated in Manchester.<br /><span className="text-[#D4A017]">No hidden fees. Just trust.</span>
         </h2>
-        <p className="font-sans text-[14px] text-[#2B1B12]/60 mb-8">Your exact fee shown before you join any circle. Always.</p>
-        <Link href="/contact" className="inline-flex items-center gap-2 font-sans text-[12px] tracking-[0.15em] uppercase px-8 py-4 rounded-full bg-[#2B1B12] text-[#D4A017] hover:bg-[#3d2518] transition-colors">
-          Join Waitlist <ArrowRight size={14} />
-        </Link>
+        <div className="flex justify-center gap-4 mt-8 flex-wrap">
+          <Link href="/groups" className="h-[48px] px-7 rounded-full bg-[#2B1B12] text-[#D4A017] font-semibold text-[14px] inline-flex items-center gap-2 hover:bg-black transition">
+            See Groups <ArrowRight className="w-4 h-4" />
+          </Link>
+          <Link href="/contact" className="h-[48px] px-7 rounded-full border border-[#2B1B12]/20 text-[#2B1B12] font-semibold text-[14px] inline-flex items-center gap-2 hover:border-[#2B1B12]/40 transition">
+            Join Waitlist
+          </Link>
+        </div>
       </section>
     </div>
   );

@@ -1,212 +1,258 @@
 'use client';
 
 import { useState } from 'react';
-import { CheckCircle, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowRight, MapPin, Phone, Mail, CheckCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+
+const VILLAGES_INTEREST = [
+  'Egbe Omo Yoruba Manchester',
+  'Oldham Market Women Cooperative',
+  'Ibadan Sons & Daughters UK',
+  'RCCG Victory House Manchester',
+  'Naija Tech Bros Manchester',
+  'Egbe Anobi London-Manchester',
+  'I want to create my own village',
+];
+
+const WHAT_NEXT = [
+  { num: '1', text: 'We verify your phone + guarantor (2h)' },
+  { num: '2', text: 'Village Alajo reviews your story' },
+  { num: '3', text: 'You get WhatsApp invite + GoCardless link' },
+];
+
+const CITIES = [
+  { name: 'Oldham, Manchester', status: 'Open Now', active: true },
+  { name: 'Birmingham', status: 'Q4 2026', active: false },
+  { name: 'London', status: 'Sept 2026', active: false },
+  { name: 'Leeds', status: '2027', active: false },
+  { name: 'Lagos / Abuja', status: 'Ibadan compound — by appointment', active: false },
+];
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string|null>(null);
   const [form, setForm] = useState({
-    name: '', email: '', phone: '', city: '', role: 'member', message: '',
+    name: '', phone: '', city: '', village: VILLAGES_INTEREST[0],
+    weeklyAmount: '50', doneBefore: 'yes', guarantor: '', email: '',
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
-    const { error: sbError } = await supabase
-      .from('waitlist')
-      .insert({
-        name: form.name,
-        email: form.email.toLowerCase(),
-        phone: form.phone || null,
-        city: form.city,
-        role: form.role,
-        message: form.message || null,
-      });
-
+    const { error: sbErr } = await supabase.from('waitlist').insert({
+      name: form.name,
+      email: form.email.toLowerCase() || `${form.phone.replace(/\s/g,'')}@waitlist.aroleadjo.com`,
+      phone: form.phone,
+      city: form.city,
+      role: 'member',
+      message: `Village: ${form.village} | Weekly: £${form.weeklyAmount} | Done before: ${form.doneBefore} | Guarantor: ${form.guarantor}`,
+    });
     setLoading(false);
-
-    if (sbError) {
-      if (sbError.code === '23505') {
-        setError('This email is already on the waitlist. We will be in touch soon.');
-      } else {
-        setError('Something went wrong. Please try WhatsApp instead.');
-      }
+    if (sbErr && sbErr.code !== '23505') {
+      setError('Something went wrong. Please try WhatsApp.');
       return;
     }
-
     setSubmitted(true);
   };
 
   return (
-    <div className="pt-28 pb-20">
-      <section className="px-6 md:px-10 max-w-[1280px] mx-auto text-center mb-16">
-        <span className="font-sans text-[10px] tracking-[0.25em] uppercase text-[#2B1B12]/50 block mb-4">Join the Waitlist</span>
-        <h1 className="font-display text-5xl md:text-7xl font-light text-[#2B1B12] leading-[1.05] mb-6">
-          Your circle is<br />
-          <span className="italic font-medium text-[#D4A017]">one step away</span>
-        </h1>
-        <p className="font-sans text-[15px] text-[#2B1B12]/60 leading-relaxed max-w-[480px] mx-auto">
-          Join the waitlist. We are launching city by city — Oldham and Manchester first. Be first in your area.
-        </p>
-      </section>
+    <div className="min-h-screen bg-[#FDFCF8] text-[#2B1B12]">
 
-      <section className="px-6 md:px-10 max-w-[1280px] mx-auto">
-        <div className="grid md:grid-cols-[1.2fr_0.8fr] gap-16 items-start">
-          {/* Form */}
+      {/* Hero */}
+      <section className="mx-auto max-w-[1280px] px-6 lg:px-8 pt-14 lg:pt-20 pb-10">
+        <div className="grid lg:grid-cols-2 gap-12 items-start">
           <div>
-            {submitted ? (
-              <div className="bg-[#2B1B12] rounded-2xl p-10 text-center">
-                <CheckCircle size={48} className="text-[#D4A017] mx-auto mb-5" />
-                <h2 className="font-display text-3xl font-light text-[#FDFCF8] mb-3">You&apos;re on the list</h2>
-                <p className="font-sans text-[14px] text-[#FDFCF8]/60 leading-relaxed mb-6">
-                  We will reach out on WhatsApp when your city launches. Typically within 2 weeks of signup.
-                </p>
-                <a
-                  href="https://wa.me/447000000000"
-                  target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 font-sans text-[12px] tracking-[0.15em] uppercase px-8 py-4 rounded-full bg-[#D4A017] text-[#2B1B12] font-semibold"
-                >
-                  Say hello on WhatsApp
-                </a>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="grid md:grid-cols-2 gap-5">
-                  <div>
-                    <label className="font-sans text-[11px] tracking-[0.1em] uppercase text-[#2B1B12]/50 block mb-2">Full Name *</label>
-                    <input
-                      required
-                      type="text"
-                      value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      placeholder="Adeola Balogun"
-                      className="w-full px-4 py-3.5 rounded-xl border border-[#2B1B12]/15 bg-[#FDFCF8] font-sans text-[14px] text-[#2B1B12] placeholder:text-[#2B1B12]/30 focus:outline-none focus:border-[#D4A017]/50 transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="font-sans text-[11px] tracking-[0.1em] uppercase text-[#2B1B12]/50 block mb-2">Email *</label>
-                    <input
-                      required
-                      type="email"
-                      value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      placeholder="adeola@email.com"
-                      className="w-full px-4 py-3.5 rounded-xl border border-[#2B1B12]/15 bg-[#FDFCF8] font-sans text-[14px] text-[#2B1B12] placeholder:text-[#2B1B12]/30 focus:outline-none focus:border-[#D4A017]/50 transition-colors"
-                    />
-                  </div>
-                </div>
-                <div className="grid md:grid-cols-2 gap-5">
-                  <div>
-                    <label className="font-sans text-[11px] tracking-[0.1em] uppercase text-[#2B1B12]/50 block mb-2">WhatsApp Number</label>
-                    <input
-                      type="tel"
-                      value={form.phone}
-                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      placeholder="+44 7700 000000"
-                      className="w-full px-4 py-3.5 rounded-xl border border-[#2B1B12]/15 bg-[#FDFCF8] font-sans text-[14px] text-[#2B1B12] placeholder:text-[#2B1B12]/30 focus:outline-none focus:border-[#D4A017]/50 transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="font-sans text-[11px] tracking-[0.1em] uppercase text-[#2B1B12]/50 block mb-2">City *</label>
-                    <input
-                      required
-                      type="text"
-                      value={form.city}
-                      onChange={(e) => setForm({ ...form, city: e.target.value })}
-                      placeholder="Oldham, Manchester..."
-                      className="w-full px-4 py-3.5 rounded-xl border border-[#2B1B12]/15 bg-[#FDFCF8] font-sans text-[14px] text-[#2B1B12] placeholder:text-[#2B1B12]/30 focus:outline-none focus:border-[#D4A017]/50 transition-colors"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="font-sans text-[11px] tracking-[0.1em] uppercase text-[#2B1B12]/50 block mb-2">I want to join as</label>
-                  <div className="grid grid-cols-3 gap-3">
-                    {[
-                      { value: 'member', label: 'Member' },
-                      { value: 'leader', label: 'Alajo Agba (Leader)' },
-                      { value: 'both', label: 'Both' },
-                    ].map((opt) => (
-                      <button
-                        key={opt.value}
-                        type="button"
-                        onClick={() => setForm({ ...form, role: opt.value })}
-                        className={`py-3 px-4 rounded-xl border font-sans text-[12px] transition-colors ${
-                          form.role === opt.value
-                            ? 'bg-[#2B1B12] text-[#D4A017] border-[#2B1B12]'
-                            : 'border-[#2B1B12]/15 text-[#2B1B12]/60 hover:border-[#2B1B12]/30'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <label className="font-sans text-[11px] tracking-[0.1em] uppercase text-[#2B1B12]/50 block mb-2">Message (optional)</label>
-                  <textarea
-                    value={form.message}
-                    onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    placeholder="Tell us about your community, or any questions you have..."
-                    rows={4}
-                    className="w-full px-4 py-3.5 rounded-xl border border-[#2B1B12]/15 bg-[#FDFCF8] font-sans text-[14px] text-[#2B1B12] placeholder:text-[#2B1B12]/30 focus:outline-none focus:border-[#D4A017]/50 transition-colors resize-none"
-                  />
-                </div>
-                {error && (
-                  <p className="font-sans text-[13px] text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3 text-center">
-                    {error}
-                  </p>
-                )}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full inline-flex items-center justify-center gap-2 font-sans text-[12px] tracking-[0.15em] uppercase px-8 py-4 rounded-full bg-[#2B1B12] text-[#D4A017] hover:bg-[#3d2518] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? 'Joining...' : <>Join the Waitlist <ArrowRight size={14} /></>}
-                </button>
-                <p className="font-sans text-[11px] text-[#2B1B12]/40 text-center">
-                  No spam. We contact you when your city is ready to launch.
-                </p>
-              </form>
-            )}
-          </div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#D4A017]/25 bg-white text-[11px] tracking-widest shadow-sm mb-6 text-[#2B1B12]">
+              <div className="w-2 h-2 rounded-full bg-[#D4A017] animate-pulse" />
+              JOIN THE VILLAGE
+            </div>
+            <h1 className="playfair text-[40px] lg:text-[64px] leading-[0.95] tracking-[-0.02em] text-[#2B1B12]">
+              Join the <span className="text-[#D4A017]">Village</span>
+            </h1>
+            <p className="mt-5 text-[16px] lg:text-[18px] leading-[1.6] opacity-70 max-w-[480px]">
+              5,000+ on waitlist. Village by village. Trust first. 24h response.
+            </p>
 
-          {/* Side panel */}
-          <div className="space-y-6">
-            <div className="bg-[#2B1B12] rounded-2xl p-7">
-              <p className="font-sans text-[10px] tracking-[0.2em] uppercase text-[#D4A017]/70 mb-3">Prefer WhatsApp?</p>
-              <p className="font-display text-2xl font-light text-[#FDFCF8] mb-4">Talk to us directly</p>
-              <p className="font-sans text-[13px] text-[#FDFCF8]/60 mb-5 leading-relaxed">Real person. Yoruba or English. We reply within 2 hours, 7 days a week.</p>
-              <a
-                href="https://wa.me/447000000000"
-                target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 font-sans text-[12px] tracking-[0.15em] uppercase px-6 py-3 rounded-full bg-[#D4A017] text-[#2B1B12] font-semibold hover:bg-[#F3D07A] transition-colors"
-              >
-                WhatsApp Us <ArrowRight size={13} />
-              </a>
+            {/* Live activity */}
+            <div className="mt-6 flex items-center gap-3 text-[12px] text-[#2B1B12]/60">
+              <div className="flex items-center gap-1.5 bg-white border border-[#2B1B12]/8 rounded-full px-4 py-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>VILLAGE ACTIVITY • Live now</span>
+              </div>
+              <span className="opacity-50">47 villages active</span>
             </div>
 
-            <div className="border border-[#2B1B12]/8 rounded-2xl p-7 paper-texture">
-              <p className="font-sans text-[10px] tracking-[0.15em] uppercase text-[#2B1B12]/40 mb-4">Launch Cities</p>
-              {[
-                { city: 'Oldham / Manchester', status: 'First Launch', active: true },
-                { city: 'Birmingham', status: 'Q4 2025', active: false },
-                { city: 'London', status: 'Q4 2025', active: false },
-                { city: 'Leeds', status: '2026', active: false },
-                { city: 'Lagos / Abuja', status: '2026 (Nigeria)', active: false },
-              ].map((c, i) => (
-                <div key={i} className={`flex items-center justify-between py-3 ${i < 4 ? 'border-b border-[#2B1B12]/6' : ''}`}>
-                  <span className="font-sans text-[13px] text-[#2B1B12]">{c.city}</span>
-                  <span className={`font-sans text-[10px] tracking-[0.08em] uppercase px-2 py-0.5 rounded-full ${c.active ? 'bg-[#D4A017]/15 text-[#B8860B]' : 'bg-[#2B1B12]/5 text-[#2B1B12]/40'}`}>
+            {/* What next */}
+            <div className="mt-8 space-y-4">
+              <p className="text-[11px] tracking-widest uppercase opacity-50 text-[#2B1B12]">WHAT NEXT</p>
+              {WHAT_NEXT.map(step => (
+                <div key={step.num} className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-[#2B1B12] text-[#D4A017] grid place-items-center font-bold text-[12px] shrink-0">{step.num}</div>
+                  <p className="text-[14px] text-[#2B1B12]/70">{step.text}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* WhatsApp option */}
+            <div className="mt-8 rounded-[20px] bg-[#2B1B12] text-[#FDFCF8] p-6">
+              <p className="text-[10px] tracking-widest text-[#D4A017]/70 mb-2">VILLAGE HOTLINE</p>
+              <div className="flex items-center gap-3 mb-4">
+                <Phone className="w-4 h-4 text-[#D4A017]" />
+                <a href="https://wa.me/447000000000" target="_blank" rel="noopener noreferrer"
+                  className="font-semibold text-[16px] text-[#D4A017] hover:opacity-80 transition">
+                  Chat on WhatsApp
+                </a>
+                <div className="ml-auto flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-[11px] text-[#FDFCF8]/50">ONLINE</span>
+                </div>
+              </div>
+              <p className="text-[12px] text-[#FDFCF8]/50">Mon–Sat 9am–8pm UK • Sunday 2pm–6pm</p>
+              <p className="text-[11px] text-[#FDFCF8]/40 mt-1">We reply in Yoruba, English, or Pidgin — your choice</p>
+              <div className="mt-4 grid grid-cols-2 gap-3 text-[12px]">
+                <div className="flex items-center gap-2 text-[#FDFCF8]/60">
+                  <Mail className="w-3.5 h-3.5" />
+                  <span>hello@aroleadjo.com</span>
+                </div>
+                <div className="flex items-center gap-2 text-[#FDFCF8]/60">
+                  <MapPin className="w-3.5 h-3.5" />
+                  <span>Oldham OL8 4, Manchester</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Cities map */}
+            <div className="mt-6 border border-[#2B1B12]/8 rounded-[20px] p-6">
+              <p className="text-[11px] tracking-widest opacity-40 text-[#2B1B12] mb-4">WHERE OUR VILLAGES ARE</p>
+              {CITIES.map((c, i) => (
+                <div key={i} className={`flex items-center justify-between py-3 ${i < CITIES.length - 1 ? 'border-b border-[#2B1B12]/6' : ''}`}>
+                  <span className="text-[13px] text-[#2B1B12]">{c.name}</span>
+                  <span className={`text-[10px] tracking-[0.08em] uppercase px-2 py-0.5 rounded-full ${c.active ? 'bg-[#D4A017]/15 text-[#B8860B] font-semibold' : 'bg-[#2B1B12]/5 text-[#2B1B12]/40'}`}>
                     {c.status}
                   </span>
                 </div>
               ))}
+              <p className="text-[11px] opacity-30 mt-4 text-[#2B1B12]">
+                47 villages live. Oldham Market Hall Saturdays 11am. Come with guarantor, leave with village.
+              </p>
             </div>
+          </div>
+
+          {/* Form */}
+          <div>
+            {submitted ? (
+              <div className="rounded-[28px] bg-[#2B1B12] p-10 text-center">
+                <CheckCircle className="w-16 h-16 text-[#D4A017] mx-auto mb-5" />
+                <p className="playfair text-[28px] font-bold text-[#FDFCF8] mb-3">You&apos;re in the village!</p>
+                <p className="text-[14px] text-[#FDFCF8]/60 leading-relaxed mb-6">
+                  We&apos;ll reach out on WhatsApp within 24 hours. Get your guarantor ready.
+                </p>
+                <a href="https://wa.me/447000000000" target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 h-11 px-6 rounded-full bg-[#D4A017] text-[#2B1B12] font-semibold text-[13px]">
+                  WhatsApp Village — Fastest
+                </a>
+                <p className="mt-3 text-[11px] text-[#FDFCF8]/30">Avg reply 1h 42m • Seen by Iya Lode</p>
+              </div>
+            ) : (
+              <div className="rounded-[28px] bg-white border border-[#2B1B12]/8 shadow-[0_20px_60px_rgba(43,27,18,0.08)] p-8">
+                <p className="playfair text-[22px] font-bold text-[#2B1B12] mb-6">Join Waitlist — Get Early Access</p>
+                <form onSubmit={submit} className="space-y-5">
+                  <div className="grid md:grid-cols-2 gap-5">
+                    <div>
+                      <label className="text-[11px] tracking-widest opacity-50 block mb-2 text-[#2B1B12]">FULL NAME *</label>
+                      <input required placeholder="Adeola Kolabalogun" value={form.name}
+                        onChange={e => setForm({ ...form, name: e.target.value })}
+                        className="w-full h-11 px-4 rounded-xl border border-[#2B1B12]/15 text-[14px] bg-[#FDFCF8] focus:outline-none focus:border-[#D4A017]/50 transition text-[#2B1B12]" />
+                    </div>
+                    <div>
+                      <label className="text-[11px] tracking-widest opacity-50 block mb-2 text-[#2B1B12]">PHONE *</label>
+                      <input required placeholder="+44 7700 000000" value={form.phone}
+                        onChange={e => setForm({ ...form, phone: e.target.value })}
+                        className="w-full h-11 px-4 rounded-xl border border-[#2B1B12]/15 text-[14px] bg-[#FDFCF8] focus:outline-none focus:border-[#D4A017]/50 transition text-[#2B1B12]" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[11px] tracking-widest opacity-50 block mb-2 text-[#2B1B12]">EMAIL</label>
+                    <input type="email" placeholder="you@email.com" value={form.email}
+                      onChange={e => setForm({ ...form, email: e.target.value })}
+                      className="w-full h-11 px-4 rounded-xl border border-[#2B1B12]/15 text-[14px] bg-[#FDFCF8] focus:outline-none focus:border-[#D4A017]/50 transition text-[#2B1B12]" />
+                  </div>
+                  <div>
+                    <label className="text-[11px] tracking-widest opacity-50 block mb-2 text-[#2B1B12]">CITY *</label>
+                    <input required placeholder="Oldham, Manchester..." value={form.city}
+                      onChange={e => setForm({ ...form, city: e.target.value })}
+                      className="w-full h-11 px-4 rounded-xl border border-[#2B1B12]/15 text-[14px] bg-[#FDFCF8] focus:outline-none focus:border-[#D4A017]/50 transition text-[#2B1B12]" />
+                  </div>
+                  <div>
+                    <label className="text-[11px] tracking-widest opacity-50 block mb-2 text-[#2B1B12]">WHICH VILLAGE INTERESTS YOU *</label>
+                    <select value={form.village} onChange={e => setForm({ ...form, village: e.target.value })}
+                      className="w-full h-11 px-4 rounded-xl border border-[#2B1B12]/15 text-[14px] bg-[#FDFCF8] text-[#2B1B12] focus:outline-none focus:border-[#D4A017]/50 transition">
+                      {VILLAGES_INTEREST.map(v => <option key={v}>{v}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[11px] tracking-widest opacity-50 block mb-2 text-[#2B1B12]">HOW MUCH TO ROTATE WEEKLY</label>
+                    <input type="range" min={50} max={1000} step={50} value={form.weeklyAmount}
+                      onChange={e => setForm({ ...form, weeklyAmount: e.target.value })}
+                      className="w-full h-1 accent-[#D4A017]"
+                      style={{ background: `linear-gradient(to right, #D4A017 ${((Number(form.weeklyAmount)-50)/950)*100}%, #e5e7eb ${((Number(form.weeklyAmount)-50)/950)*100}%)` }}
+                    />
+                    <div className="flex justify-between text-[11px] opacity-40 mt-1 text-[#2B1B12]">
+                      <span>£50</span>
+                      <span className="font-semibold text-[#D4A017]">£{form.weeklyAmount}/week</span>
+                      <span>£1000</span>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[11px] tracking-widest opacity-50 block mb-2 text-[#2B1B12]">HAVE YOU DONE AJO BEFORE? *</label>
+                    <div className="flex gap-3">
+                      {['yes', 'no', 'long ago'].map(v => (
+                        <button key={v} type="button" onClick={() => setForm({ ...form, doneBefore: v })}
+                          className={`flex-1 h-10 rounded-xl border text-[13px] font-medium transition capitalize ${form.doneBefore === v ? 'bg-[#2B1B12] text-[#D4A017] border-[#2B1B12]' : 'border-[#2B1B12]/15 text-[#2B1B12]/60 hover:border-[#2B1B12]/30'}`}>
+                          {v}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[11px] tracking-widest opacity-50 block mb-2 text-[#2B1B12]">GUARANTOR NAME + PHONE (optional — early trust boost)</label>
+                    <input placeholder="Chief Ade • +44 7700..." value={form.guarantor}
+                      onChange={e => setForm({ ...form, guarantor: e.target.value })}
+                      className="w-full h-11 px-4 rounded-xl border border-[#2B1B12]/15 text-[14px] bg-[#FDFCF8] focus:outline-none focus:border-[#D4A017]/50 transition text-[#2B1B12]" />
+                  </div>
+                  <p className="text-[11px] opacity-40 leading-relaxed text-[#2B1B12]">
+                    I agree to <Link href="/legal" className="underline">Trust & Security locks</Link>, Auto-debit mandate understanding, and that my village can see my guarantor if provided. Data protected under UK GDPR.
+                  </p>
+                  {error && <p className="text-[13px] text-red-600 bg-red-50 rounded-xl px-4 py-3">{error}</p>}
+                  <button type="submit" disabled={loading}
+                    className="w-full h-12 rounded-full bg-[#2B1B12] text-[#D4A017] font-semibold text-[14px] hover:bg-black transition disabled:opacity-50 flex items-center justify-center gap-2">
+                    {loading ? 'Joining...' : <><span>Join Waitlist — Get Early Access</span><ArrowRight className="w-4 h-4" /></>}
+                  </button>
+                  <p className="text-center text-[11px] opacity-40 text-[#2B1B12]">
+                    Egbe Manchester joined 3 days ago • Oldham Market Women joined today
+                  </p>
+                </form>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Trust stack */}
+      <section className="mx-auto max-w-[1280px] px-6 lg:px-8 py-12 pb-20">
+        <div className="rounded-[20px] bg-[#2B1B12] text-[#FDFCF8] p-6 lg:p-8 text-center">
+          <p className="text-[10px] tracking-widest text-[#D4A017]/70 mb-3">TRUST STACK</p>
+          <p className="text-[13px] opacity-60 leading-relaxed max-w-[600px] mx-auto">
+            Arole Adjo is not a bank. Funds held in Modulr safeguarding accounts. GoCardless handles auto-debit.
+            Read <Link href="/trust-security" className="text-[#D4A017] hover:opacity-70">Trust & Security</Link> for full lock details.
+          </p>
+          <div className="mt-6 flex justify-center gap-4 flex-wrap">
+            {['Modulr', 'GoCardless', 'FCA Aligned'].map(t => (
+              <span key={t} className="px-4 py-2 rounded-full border border-white/10 text-[12px] text-white/60">{t}</span>
+            ))}
           </div>
         </div>
       </section>
